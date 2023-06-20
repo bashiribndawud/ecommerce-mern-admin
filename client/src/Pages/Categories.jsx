@@ -38,7 +38,6 @@ export const Categories = () => {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values) => {
-        console.log(values)
       if (categoryForEdit) {
         const {
           data: { message },
@@ -278,7 +277,7 @@ export const Categories = () => {
                   <td className="text-gray-500">{index + 1}</td>
                   <td className="text-gray-500">{category.name}</td>
                   <td className="text-gray-500">
-                    {category.parent?.name ?? ""}
+                    {category?.parent?.name ?? ""}
                   </td>
                   <td>
                     <button

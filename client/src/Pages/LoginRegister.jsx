@@ -46,12 +46,10 @@ const Login = () => {
     },
   });
 
-  const google = async () => {
+  const handleGoogleLogin = async () => {
     window.open("http://localhost:9000/auth/google", "_self");
   };
-  const responseGoogle = (response) => {
-    console.log(response);
-  };
+  
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-gray-50">
       <Toaster
@@ -71,9 +69,13 @@ const Login = () => {
       />
       <div className="flex flex-col md:flex-row md:p-8 gap-8 items-center justify-evenly bg-white w-[90%] h-[85%] md:w-[60%] shadow-xl rounded-xl">
         <div className="left flex flex-col items-center space-y-2 w-[90%] sm:w-[70%] py-2">
-          <GoogleLogin
-            buttonText="Log in with Google"
-          />
+          <button
+            className="p-4 w-[95%] bg-red-500 text-white rounded-xl flex items-center justify-center"
+            onClick={handleGoogleLogin}
+          >
+            <AiOutlineGoogle className="mr-2 text-3xl" />
+            <span className="font-bold">Google</span>
+          </button>
           <button className="p-4 w-[95%] text-center bg-blue-800 text-white rounded-xl flex items-center justify-center">
             <ImFacebook className="mr-2 text-3xl" />
             <span className="font-bold">Facebook</span>

@@ -10,7 +10,7 @@ import { ReactSortable } from "react-sortablejs";
 const ProductForm = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const isEditPage = pathname.includes("/product/edit/");
+  const isEditPage = pathname.includes("/products/edit/");
   const id = pathname.split("/")[3];
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
@@ -25,7 +25,7 @@ const ProductForm = () => {
   async function handformSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    if (isEditPage) {
+    if (isEditPage) { 
       const { data, status } = await axios.put(
         "/product/update",
         { name, category, description, price, images, productProperties },
@@ -60,12 +60,12 @@ const ProductForm = () => {
         formData.append("file", files[i]);
       }
       const {
-        data: { fileNames },
+        data
       } = await axios.post("/product/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setImages((prevImages) => {
-        return [...prevImages, ...fileNames];
+        return [...prevImages, ...data];
       });
       setUploading(false);
     }
@@ -128,7 +128,6 @@ const ProductForm = () => {
         const { data, status } = await axios.get("/product/edit", {
           params: { id },
         });
-        console.log(data)
         if(status === 200){
           setName(data.name)
           setCategory(data?.category?._id)
@@ -202,7 +201,9 @@ const ProductForm = () => {
         {propertiesToFill?.length > 0 &&
           propertiesToFill?.map((p, index) => (
             <div className="" key={index}>
-              <label className="">{p?.name[0].toUpperCase()+p.name.substring(1)}</label>
+              <label className="">
+                {p?.name[0].toUpperCase() + p.name.substring(1)}
+              </label>
               <select
                 value={productProperties[p?.name]}
                 onChange={(e) => setProductProp(p?.name, e.target.value)}
@@ -221,16 +222,16 @@ const ProductForm = () => {
             setList={updateImagesOrder}
           >
             {images?.length > 0 &&
-              images?.map((link) => (
-                <div key={link} className="h-24 inline-block relative">
+              images?.map((imageLink) => (
+                <div key={imageLink} className="h-24 inline-block relative">
                   <img
-                    src={`http://localhost:9000/getFiles/uploads/${link}`}
+                    src={imageLink}
                     alt=""
                     className="object-fit h-24 rounded-lg"
                   />
                   <div
                     className="absolute bottom-2 p-1 rounded-full text-white right-3 bg-red-400"
-                    onClick={() => removeImage(link)}
+                    onClick={() => removeImage(imageLink)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

@@ -5,18 +5,25 @@ dotenv.config();
 import fs from "fs";
 import mimetype from "mime-types";
 import { fileURLToPath } from "url";
-import path from 'path'
+import path from "path";
+import { v2 as cloudinary } from 'cloudinary';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const parentDirectory = path.resolve(__dirname, '..')
+const parentDirectory = path.resolve(__dirname, "..");
 
 const bucketName = "bashir-mern-ecommerce";
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
 export const addNewProduct = async (req, res) => {
   const { name, description, price, images, category, productProperties } =
     req.body;
-  console.log(images)
   try {
     const newProduct = await Product.create({
       name,
@@ -33,7 +40,9 @@ export const addNewProduct = async (req, res) => {
 };
 
 export const allProduct = async (req, res) => {
-  const products = await Product.find({}).sort({'_id': -1}).limit(10);
+  const { userId } = req.body;
+  console.log(userId);
+  const products = await Product.find({}).sort({ _id: -1 }).limit(10);
   if (products) {
     return res.status(200).json(products);
   }
@@ -41,7 +50,7 @@ export const allProduct = async (req, res) => {
 
 export const getSingleProduct = async (req, res) => {
   const { id } = req.query;
-  const product = await Product.findById(id).populate('category');
+  const product = await Product.findById(id).populate("category");
   if (product) {
     return res.status(200).json(product);
   }
@@ -51,18 +60,17 @@ export const updateProduct = async (req, res) => {
   try {
     const { name, price, description, images, category, productProperties } =
       req.body;
+      console.log(req.body)
     const { id } = req.query;
-    await Product.updateOne(
+    await Product.findOneAndUpdate(
       { _id: id },
       {
-        $set: {
-          name,
-          price,
-          description,
-          category,
-          properties: productProperties,
-        },
-        $push: { images: { $each: images } },
+        name,
+        price,
+        description,
+        images,
+        category,
+        properties: productProperties,
       }
     );
     return res.status(200).json({ message: "Product Updated" });
@@ -77,7 +85,6 @@ export const deleteProduct = async (req, res) => {
     const { productId } = req.params;
     await Product.deleteOne({ _id: productId });
     return res.status(200).json("OK");
-    
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error });
@@ -115,16 +122,15 @@ export const deleteProduct = async (req, res) => {
 
 export const uploadFile = async (req, res) => {
   const { files } = req;
-  const fileNames = [];
-  for (let i = 0; i < files.length; i++) {
-    fileNames.push(files[i].filename);
+  const uploadResults = [];
+  for(const file of files) {
+    const result = await cloudinary.uploader.upload(file.path)
+    uploadResults.push(result.secure_url);
   }
-  return res.status(200).json({ fileNames });
+  return res.status(200).json(uploadResults);
 };
 
-export const updateFile = async (req, res) => {
-
-}
+// export const updateFile = async (req, res) => {};
 
 export const deleteProductFiles = async (req, res) => {
   const { filename, id } = req.params;
@@ -133,7 +139,7 @@ export const deleteProductFiles = async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
-    const index = product.images.indexOf(filename);
+    const index = product.images.indexOf(filename); // return index or -1(not found)
     if (index !== -1) {
       product.images.splice(index, 1);
       await product.save();
@@ -151,15 +157,22 @@ export const deleteProductFiles = async (req, res) => {
   }
 };
 
-
 export const removeFileLocal = (req, res) => {
-    const {filename} = req.params;
-    const filePath = path.join(parentDirectory, "uploads", filename);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-      return res.status(200).json({ message: "File deleted successfully" });
-    } else {
-      res.status(404).json({ error: "File not found" });
-    }
+  const { filename } = req.params;
+  
+  const filePath = path.join(parentDirectory, "uploads", filename);
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+    return res.status(200).json({ message: "File deleted successfully" });
+  } else {
+    res.status(404).json({ error: "File not found" });
+  }
+};
 
-}
+export const getCartItems = async (req, res) => {
+  console.log(req.body);
+  // const { cartProducts } = req.body;
+  // console.log(cartProducts);
+  // const products = await Product.find({ _id: cartProducts });
+  // console.log(products);
+};
