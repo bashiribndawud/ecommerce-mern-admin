@@ -169,10 +169,3 @@ export const removeFileLocal = (req, res) => {
   }
 };
 
-export const getCartItems = async (req, res) => {
-  console.log(req.body);
-  // const { cartProducts } = req.body;
-  // console.log(cartProducts);
-  // const products = await Product.find({ _id: cartProducts });
-  // console.log(products);
-};
