@@ -6,6 +6,9 @@
     "build" : "cd api && yarn && yarn build",
     "start" : "node api/server.js"
   },
+  "engines": {
+  "node": ">=16.0.0"
+  },
   "repository": "https://github.com/bashiribndawud/ecommerce-mern-admin.git",
   "author": "Bashir Dauda <56880803+bashiribndawud@users.noreply.github.com>",
   "license": "MIT"
