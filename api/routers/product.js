@@ -10,7 +10,6 @@ import {
   uploadFile,
   deleteProductFiles,
   removeFileLocal,
-  getCartItems,
 } from "../controllers/product.js";
 
 router.get("/all", allProduct);
@@ -22,7 +21,6 @@ router.post("/upload", upload.array('file', 100), uploadFile)
 router.put("/files/:filename/:id", deleteProductFiles);
 router.post("/removeFile/:filename", removeFileLocal);
 
-//Frontend Store Routers
-router.get('/store/cart', getCartItems)
+
 export default router;
 
