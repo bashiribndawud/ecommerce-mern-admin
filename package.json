@@ -2,6 +2,7 @@
   "name": "Admin-dashboard",
   "version": "1.0.0",
   "main": "index.js",
+  "license": "MIT",
   "scripts": {
     "build": "cd api && yarn install && yarn build",
     "start": "node api/server.js"
@@ -10,6 +11,5 @@
     "node": ">=16.0.0"
   },
   "repository": "https://github.com/bashiribndawud/ecommerce-mern-admin.git",
-  "author": "Bashir Dauda <56880803+bashiribndawud@users.noreply.github.com>",
-  "license": "MIT"
+  "author": "Bashir Dauda <56880803+bashiribndawud@users.noreply.github.com>"
 }
